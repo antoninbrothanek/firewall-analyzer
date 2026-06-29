@@ -42,3 +42,32 @@ def update_history(ip_profiles: dict) -> dict:
 
     save_history(history)
     return history
+def print_history_report(history: dict, limit: int = 20) -> None:
+    print()
+    print("=" * 60)
+    print("History Report")
+    print("=" * 60)
+
+    if not history:
+        print()
+        print("Historie je zatím prázdná.")
+        return
+
+    print()
+    print("TOP IP podle celkového počtu DROP paketů:")
+    print()
+
+    items = sorted(
+        history.items(),
+        key=lambda item: item[1].get("total_drops", 0),
+        reverse=True,
+    )
+
+    for ip, data in items[:limit]:
+        print(
+            f"{ip:>18}  "
+            f"drops {data.get('total_drops', 0):>8}  "
+            f"runs {data.get('runs_seen', 0):>4}  "
+            f"first {data.get('first_seen', '-'):<19}  "
+            f"last {data.get('last_seen', '-'):<19}"
+        )

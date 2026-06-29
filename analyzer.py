@@ -11,7 +11,7 @@ import sys
 from firewall_analyzer.config import LOG_FILE, SHOREWALL_RULES
 from firewall_analyzer.parser import analyze_log
 from firewall_analyzer.shorewall import load_published_services
-from firewall_analyzer.history import update_history
+from firewall_analyzer.history import update_history, print_history_report
 from firewall_analyzer.reports import (
     print_top,
     print_ip_profiles,
@@ -91,6 +91,7 @@ def main() -> None:
     print_ip_profiles(src_counter, ip_profiles, published_services)
     print_service_profiles(service_profiles, published_services)
     print_blacklist_candidates(ip_profiles)
+    print_history_report(history)
 
 
 if __name__ == "__main__":
