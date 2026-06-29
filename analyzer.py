@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
-Firewall Analyzer v0.8
+Firewall Analyzer v0.9
 """
 
+import argparse
 from pathlib import Path
 import signal
 import sys
@@ -20,7 +21,23 @@ from firewall_analyzer.blacklist import print_blacklist_candidates
 signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Firewall Analyzer - Shorewall DROP log analyzer"
+    )
+
+    parser.add_argument(
+        "--candidates-only",
+        action="store_true",
+        help="zobrazí pouze kandidáty na blacklist",
+    )
+
+    return parser.parse_args()
+
+
 def main() -> None:
+    args = parse_args()
+
     if not LOG_FILE.exists():
         print(f"Log {LOG_FILE} neexistuje.")
         sys.exit(1)
@@ -44,8 +61,12 @@ def main() -> None:
         print()
         sys.exit(1)
 
+    if args.candidates_only:
+        print_blacklist_candidates(ip_profiles)
+        return
+
     print("=" * 60)
-    print("Firewall Analyzer v0.8")
+    print("Firewall Analyzer v0.9")
     print("=" * 60)
     print(f"Log soubor : {LOG_FILE}")
     print(f"Shorewall rules: {SHOREWALL_RULES}")
