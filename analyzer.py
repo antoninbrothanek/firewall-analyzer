@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Firewall Analyzer v0.9
+Firewall Analyzer v1.0-dev
 """
 
 import argparse
@@ -11,6 +11,7 @@ import sys
 from firewall_analyzer.config import LOG_FILE, SHOREWALL_RULES
 from firewall_analyzer.parser import analyze_log
 from firewall_analyzer.shorewall import load_published_services
+from firewall_analyzer.history import update_history
 from firewall_analyzer.reports import (
     print_top,
     print_ip_profiles,
@@ -68,17 +69,20 @@ def main() -> None:
         print()
         sys.exit(1)
 
+    history = update_history(ip_profiles)
+
     if args.candidates_only:
         print_blacklist_candidates(ip_profiles)
         return
 
     print("=" * 60)
-    print("Firewall Analyzer v0.9")
+    print("Firewall Analyzer v1.0-dev")
     print("=" * 60)
     print(f"Log soubor : {args.log_file}")
     print(f"Shorewall rules: {SHOREWALL_RULES}")
     print(f"Publikované služby načtené ze Shorewallu: {len(published_services)}")
     print(f"DROP paketů: {total}")
+    print(f"Historie IP : {len(history)} záznamů")
 
     print_top("TOP zdrojové IP", src_counter)
     print_top("TOP cílové porty", dpt_counter)
