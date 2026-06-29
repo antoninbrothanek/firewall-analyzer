@@ -23,13 +23,20 @@ signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Firewall Analyzer - Shorewall DROP log analyzer"
+        description="Firewall Analyzer - Shorewall DROP analyzer"
     )
 
     parser.add_argument(
         "--candidates-only",
         action="store_true",
-        help="zobrazí pouze kandidáty na blacklist",
+        help="zobrazí pouze kandidáty blacklistu",
+    )
+
+    parser.add_argument(
+        "--log-file",
+        type=Path,
+        default=LOG_FILE,
+        help="cesta k analyzovanému logu",
     )
 
     return parser.parse_args()
@@ -38,8 +45,8 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
 
-    if not LOG_FILE.exists():
-        print(f"Log {LOG_FILE} neexistuje.")
+    if not args.log_file.exists():
+        print(f"Log {args.log_file} neexistuje.")
         sys.exit(1)
 
     published_services = load_published_services()
@@ -52,7 +59,7 @@ def main() -> None:
             proto_counter,
             ip_profiles,
             service_profiles,
-        ) = analyze_log(LOG_FILE)
+        ) = analyze_log(args.log_file)
 
     except PermissionError:
         print()
@@ -68,7 +75,7 @@ def main() -> None:
     print("=" * 60)
     print("Firewall Analyzer v0.9")
     print("=" * 60)
-    print(f"Log soubor : {LOG_FILE}")
+    print(f"Log soubor : {args.log_file}")
     print(f"Shorewall rules: {SHOREWALL_RULES}")
     print(f"Publikované služby načtené ze Shorewallu: {len(published_services)}")
     print(f"DROP paketů: {total}")
