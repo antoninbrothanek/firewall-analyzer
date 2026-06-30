@@ -1,0 +1,13 @@
+# Firewall Analyzer whitelist
+# One IPv4/IPv6 address or CIDR network per line.
+
+# Provider / local monitoring
+89.31.42.50/32
+
+# Meta / Facebook / WhatsApp
+157.240.0.0/16
+31.13.0.0/16
+31.14.0.0/16
+
+# Apple
+17.0.0.0/8

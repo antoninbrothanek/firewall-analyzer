@@ -7,17 +7,13 @@ from __future__ import annotations
 import ipaddress
 from pathlib import Path
 
-
 CONFIG_FILE = Path("config.yaml")
+DEFAULT_WHITELIST_FILE = Path("whitelist.txt")
 
 
-def load_whitelist(config_file: Path = CONFIG_FILE) -> list[ipaddress._BaseNetwork]:
-    networks = []
-
+def get_whitelist_file(config_file: Path = CONFIG_FILE) -> Path:
     if not config_file.exists():
-        return networks
-
-    in_whitelist = False
+        return DEFAULT_WHITELIST_FILE
 
     with config_file.open("r", encoding="utf-8", errors="ignore") as f:
         for line in f:
@@ -26,20 +22,31 @@ def load_whitelist(config_file: Path = CONFIG_FILE) -> list[ipaddress._BaseNetwo
             if not stripped or stripped.startswith("#"):
                 continue
 
-            if stripped == "whitelist:":
-                in_whitelist = True
+            if stripped.startswith("whitelist_file:"):
+                value = stripped.split(":", 1)[1].strip()
+                return Path(value)
+
+    return DEFAULT_WHITELIST_FILE
+
+
+def load_whitelist() -> list[ipaddress._BaseNetwork]:
+    networks = []
+    whitelist_file = get_whitelist_file()
+
+    if not whitelist_file.exists():
+        return networks
+
+    with whitelist_file.open("r", encoding="utf-8", errors="ignore") as f:
+        for line in f:
+            stripped = line.strip()
+
+            if not stripped or stripped.startswith("#"):
                 continue
 
-            if in_whitelist:
-                if not stripped.startswith("- "):
-                    break
-
-                value = stripped[2:].strip()
-
-                try:
-                    networks.append(ipaddress.ip_network(value, strict=False))
-                except ValueError:
-                    continue
+            try:
+                networks.append(ipaddress.ip_network(stripped, strict=False))
+            except ValueError:
+                continue
 
     return networks
 
