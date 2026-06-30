@@ -1,6 +1,21 @@
+# Python
 __pycache__/
 *.pyc
-reports/
-state/
-*.log
-analyzer.py.bak
+
+# Backup files
+*.bak
+
+# Runtime state
+state/ip-history.json
+
+# Reports
+reports/*.txt
+reports/*.json
+reports/*.html
+
+# VS Code
+.vscode/
+
+# Python virtualenv
+.venv/
+venv/
