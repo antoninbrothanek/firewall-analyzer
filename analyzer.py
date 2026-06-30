@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Firewall Analyzer v1.1-dev
+Firewall Analyzer v1.2-dev
 """
 
 import argparse
@@ -13,6 +13,7 @@ from firewall_analyzer.parser import analyze_log
 from firewall_analyzer.shorewall import load_published_services
 from firewall_analyzer.history import update_history, print_history_report
 from firewall_analyzer.whitelist import load_whitelist
+from firewall_analyzer.badlist import load_badlist
 from firewall_analyzer.reports import (
     print_top,
     print_ip_profiles,
@@ -53,6 +54,7 @@ def main() -> None:
 
     published_services = load_published_services()
     whitelist = load_whitelist()
+    badlist = load_badlist()
 
     try:
         (
@@ -78,12 +80,13 @@ def main() -> None:
         return
 
     print("=" * 60)
-    print("Firewall Analyzer v1.1-dev")
+    print("Firewall Analyzer v1.2-dev")
     print("=" * 60)
     print(f"Log soubor : {args.log_file}")
     print(f"Shorewall rules: {SHOREWALL_RULES}")
     print(f"Publikované služby načtené ze Shorewallu: {len(published_services)}")
     print(f"Whitelist sítí: {len(whitelist)}")
+    print(f"Badlist sítí: {len(badlist)}")
     print(f"DROP paketů: {total}")
     print(f"Historie IP : {len(history)} záznamů")
 
@@ -91,7 +94,7 @@ def main() -> None:
     print_top("TOP cílové porty", dpt_counter)
     print_top("Protokoly", proto_counter)
 
-    print_ip_profiles(src_counter, ip_profiles, published_services)
+    print_ip_profiles(src_counter, ip_profiles, published_services, badlist)
     print_service_profiles(service_profiles, published_services)
     print_blacklist_candidates(ip_profiles, whitelist)
     print_history_report(history)

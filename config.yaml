@@ -3,3 +3,4 @@ log_file: /var/log/syslog
 marker: "net-fw DROP"
 top_count: 20
 whitelist_file: whitelist.txt
+badlist_file: badlist.txt

@@ -1,0 +1,11 @@
+# Firewall Analyzer badlist
+# One IPv4/IPv6 address or CIDR network per line.
+# This file is used only for reporting, not for automatic blocking.
+
+# Example:
+# 1.2.3.4/32# Firewall Analyzer badlist
+# One IPv4/IPv6 address or CIDR network per line.
+# This file is used only for reporting, not for automatic blocking.
+
+# Example:
+# 1.2.3.4/32

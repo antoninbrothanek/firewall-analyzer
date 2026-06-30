@@ -1,5 +1,6 @@
 from collections import Counter
 
+from .badlist import is_badlisted
 from .config import TOP_COUNT, PROFILE_COUNT
 from .scoring import calculate_threat_score, classify_score
 
@@ -17,7 +18,10 @@ def print_ip_profiles(
     src_counter: Counter,
     ip_profiles: dict,
     published_services: dict[str, str],
+    badlist: list | None = None,
 ) -> None:
+    badlist = badlist or []
+
     print()
     print("=" * 60)
     print(f"IP profily TOP {PROFILE_COUNT}")
@@ -28,9 +32,13 @@ def print_ip_profiles(
         score, reasons = calculate_threat_score(ip, profile)
         recommendation = classify_score(score)
 
+        badlisted_label = ""
+        if is_badlisted(ip, badlist):
+            badlisted_label = " [BADLISTED]"
+
         print()
         print("-" * 60)
-        print(f"IP: {ip}")
+        print(f"IP: {ip}{badlisted_label}")
         print(f"Celkem DROP : {profile['total']}")
         print(f"Threat Score: {score}/100")
         print(f"Doporučení  : {recommendation}")
